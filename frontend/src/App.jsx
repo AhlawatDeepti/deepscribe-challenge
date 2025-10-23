@@ -19,7 +19,7 @@ const App = () => {
 
     try {
       // API call to the Flask backend
-      const response = await axios.post('http://127.0.0.1:5001/api/chat', {
+      const response = await axios.post('https://deepscribe-challenge-backend.onrender.com', {
         question: input
       });
 
