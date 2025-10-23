@@ -1,0 +1,17 @@
+Provider: Good morning, John. What brings you in today?
+Patient: Good morning, Doctor. I've had this nagging cough for about three weeks now. It's mostly dry, but sometimes I feel a bit of phlegm. I'm also feeling more tired than usual and get a bit winded when I climb the stairs.
+Provider: I see. Sorry to hear that. Any fever, chills, or night sweats?
+Patient: No fever that I've noticed. Maybe some mild chills once or twice, but nothing major.
+Provider: Okay. Let's review your history. You're 45, and you mentioned on your intake form a history of smoking?
+Patient: Yes, I smoked about half a pack a day for 15 years. I managed to quit two years ago, which I'm proud of.
+Provider: That's excellent, John. Quitting is the best thing you could have done for your health. Do you have any history of asthma or lung problems?
+Patient: No, nothing like that.
+Provider: Alright, let's have a listen to your lungs. Please take a deep breath in and out for me... Okay... another one... Lungs sound mostly clear, but there's a slight wheeze on the right side.
+Provider: Given your symptoms and smoking history, I want to be thorough. I'm thinking this is likely a case of bronchitis, but we need to rule out anything else.
+Patient: What do you have in mind?
+Provider: I'm prescribing you an Albuterol inhaler. It should help with the wheezing and shortness of breath. Use two puffs, four times a day. I also want to get a chest X-ray, just to get a clear picture of what's going on in your lungs.
+Patient: An X-ray? Is it serious?
+Provider: I don't want you to worry. In most cases, it's just a precaution to ensure we're not missing something like pneumonia. The radiology department is just downstairs. You can get it done today.
+Patient: Okay, I can do that. An inhaler and an X-ray.
+Provider: Correct. We'll get the results of the X-ray back in a day or two. Let's schedule a follow-up call in three days to check on your symptoms and discuss the results. My nurse will give you the prescription and the referral for the X-ray on your way out.
+Patient: Thank you, Doctor.
