@@ -16,31 +16,48 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 # Load environment variables
 load_dotenv()
 
-# Configure Google Generative AI
-genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
-
-# --- Data Loading and Processing ---
-# Load the transcript
-loader = TextLoader('./transcript.txt')
-documents = loader.load()
-
-# Split the document into chunks
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
-docs = text_splitter.split_documents(documents)
-
-# Create embeddings and store in Chroma vector store
-embedding = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-vector_store = Chroma.from_documents(docs, embedding)
-
 # --- Flask App Initialization ---
 app = Flask(__name__)
-CORS(app)
+# Replace with your actual frontend URL from Render
+frontend_url = "https://deepscribe-challenge-frontend.onrender.com"
+# Specific CORS configuration for production
+CORS(app, resources={r"/api/*": {"origins": frontend_url}})
 
-# --- LLM and QA Chain Setup ---
-# FINAL FIX: Using a model name that is confirmed to be available to your project.
-llm = ChatGoogleGenerativeAI(model="models/gemini-pro-latest", temperature=0.3)
-retriever = vector_store.as_retriever(search_kwargs={"k": 3}) 
-qa_chain = ConversationalRetrievalChain.from_llm(llm, retriever)
+# --- Global Placeholder for our QA Chain ---
+# We will initialize this on the first request to avoid timeouts on startup.
+qa_chain = None
+
+def initialize_qa_chain():
+    """
+    This function will be called once on the first request to initialize
+    the expensive components (models, vector store).
+    """
+    global qa_chain
+    print("Initializing QA Chain...")
+    
+    # Configure Google Generative AI
+    genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+
+    # Data Loading and Processing
+    loader = TextLoader('./transcript.txt')
+    documents = loader.load()
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+    docs = text_splitter.split_documents(documents)
+    
+    # Create embeddings and vector store
+    embedding = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    vector_store = Chroma.from_documents(docs, embedding)
+    
+    # LLM and QA Chain Setup
+    llm = ChatGoogleGenerativeAI(model="models/gemini-pro-latest", temperature=0.3)
+    retriever = vector_store.as_retriever(search_kwargs={"k": 3}) 
+    
+    # Assign the initialized chain to the global variable
+    qa_chain = ConversationalRetrievalChain.from_llm(llm, retriever)
+    print("QA Chain Initialized Successfully.")
+
+
+# --- Routes ---
 
 # In-memory store for chat histories
 chat_histories = {} 
@@ -51,6 +68,14 @@ def index():
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
+    # LAZY INITIALIZATION: Check if the chain has been loaded yet.
+    if qa_chain is None:
+        try:
+            initialize_qa_chain()
+        except Exception as e:
+            print(f"CRITICAL: Failed to initialize QA Chain: {e}")
+            return jsonify({'error': 'Server is not ready, initialization failed.'}), 503
+
     data = request.get_json()
     question = data.get('question')
     session_id = data.get('session_id', 'default_session')
@@ -70,8 +95,10 @@ def chat():
 
         return jsonify({'answer': answer})
     except Exception as e:
-        print(f"An error occurred: {e}") 
+        print(f"An error occurred during chat processing: {e}") 
         return jsonify({'error': 'Failed to process the request'}), 500
 
 if __name__ == '__main__':
+    # When running locally, we can initialize right away for easier debugging
+    initialize_qa_chain()
     app.run(debug=True, port=5001)
