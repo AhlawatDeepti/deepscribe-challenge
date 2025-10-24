@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 print("Attempting to list available models...")
 
 try:
-    # Load the API key from your .env file
+    
     load_dotenv()
     api_key = os.getenv("GOOGLE_API_KEY")
 
@@ -20,7 +20,7 @@ try:
         model_found = False
         for m in genai.list_models():
             model_found = True
-            # Check if the model supports the 'generateContent' method
+            
             if 'generateContent' in m.supported_generation_methods:
                 print(f"Model Name: {m.name}")
         

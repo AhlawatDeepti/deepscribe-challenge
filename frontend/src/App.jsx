@@ -18,7 +18,7 @@ const App = () => {
     setIsLoading(true);
 
     try {
-      // API call to the Flask backend
+      // API call to the Flask backend on render
       const response = await axios.post('https://deepscribe-challenge-backend.onrender.com/api/chat', {
         question: input
       });

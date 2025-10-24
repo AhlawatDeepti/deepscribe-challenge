@@ -1,5 +1,3 @@
-# C:\Users\17329\Documents\deepscribe-challenge\backend\app.py
-
 import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -18,12 +16,12 @@ load_dotenv()
 
 # --- Flask App Initialization ---
 app = Flask(__name__)
-# Replace with your actual frontend URL from Render
+
 frontend_url = "https://deepscribe-challenge-frontend.onrender.com"
-# Specific CORS configuration for production
+
 CORS(app, resources={r"/api/*": {"origins": frontend_url}})
 
-# --- Global Placeholder for our QA Chain ---
+
 # We will initialize this on the first request to avoid timeouts on startup.
 qa_chain = None
 
@@ -35,7 +33,7 @@ def initialize_qa_chain():
     global qa_chain
     print("Initializing QA Chain...")
     
-    # Configure Google Generative AI
+    
     genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
     # Data Loading and Processing
